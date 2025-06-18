@@ -1,0 +1,79 @@
+{% extends "base.html" %} 
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Your Saved Passwords</h1>
+    <ul class="list-group mb-4" id="passwords">
+        {% for password in passwords %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <strong>{{ password.name }}</strong>: 
+                <span class="password-text" id="password-{{ password.id }}" style="display: none;">{{ password.data }}</span>
+                <span class="password-dots" id="dots-{{ password.id }}">••••••••</span>
+                <span class="text-secondary" style="cursor: pointer;" onClick="togglePassword('{{ password.id }}')">
+                    <i class="bi bi-eye" id="eyeIcon-{{ password.id }}"></i>
+                </span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger" onClick="deletePassword('{{ password.id }}')">
+                <i class="bi bi-trash"></i>
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label for="name" class="form-label">Label</label>
+            <input type="text" name="name" id="name" class="form-control" placeholder="e.g., Gmail" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-group">
+                <input type="password" name="password" id="password" class="form-control" required>
+                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                    <i class="bi bi-eye" id="eyeIcon"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Save Password</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Toggle visibility for saved passwords
+    function togglePassword(id) {
+        const passwordText = document.getElementById(`password-${id}`);
+        const passwordDots = document.getElementById(`dots-${id}`);
+        const eyeIcon = document.getElementById(`eyeIcon-${id}`);
+
+        if (passwordText.style.display === "none") {
+            passwordText.style.display = "inline";
+            passwordDots.style.display = "none";
+            eyeIcon.classList.remove("bi-eye");
+            eyeIcon.classList.add("bi-eye-slash");
+        } else {
+            passwordText.style.display = "none";
+            passwordDots.style.display = "inline";
+            eyeIcon.classList.remove("bi-eye-slash");
+            eyeIcon.classList.add("bi-eye");
+        }
+    }
+
+    // Toggle visibility for input password field
+    const toggle = document.getElementById('togglePassword');
+    const pwd = document.getElementById('password');
+    const icon = document.getElementById('eyeIcon');
+
+    toggle.addEventListener('click', function () {
+        const type = pwd.getAttribute('type') === 'password' ? 'text' : 'password';
+        pwd.setAttribute('type', type);
+        icon.classList.toggle('bi-eye');
+        icon.classList.toggle('bi-eye-slash');
+    });
+</script>
+{% endblock %}
